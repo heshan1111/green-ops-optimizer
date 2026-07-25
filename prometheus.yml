@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s # How often to scrape metrics from targets (5 seconds for fast demo feedback)
+
+scrape_configs:
+  - job_name: "greenops-api-service"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["api:8000"] # We use the container name 'api' instead of localhost

@@ -1,0 +1,50 @@
+networks:
+  greenops-network:
+    driver: bridge
+
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: eco-api
+    ports:
+      - "8000:8000"
+    networks:
+      - greenops-network
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus-server
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - greenops-network
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana-dashboard
+    ports:
+      - "3000:3000"
+    networks:
+      - greenops-network
+    depends_on:
+      - prometheus
+
+  optimizer:
+    build:
+      context: ./optimizer
+      dockerfile: Dockerfile
+    container_name: optimizer-engine
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090/api/v1/query
+    volumes:
+      - //var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - greenops-network
+    depends_on:
+      - prometheus
