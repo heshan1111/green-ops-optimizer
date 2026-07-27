@@ -8,7 +8,6 @@ PROMETHEUS_URL = os.getenv(
 )
 
 # Get CPU usage from Prometheus
-# Get CPU usage from Prometheus
 def fetch_cpu_usage():
 
     # Prometheus query

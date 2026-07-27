@@ -1,3 +1,8 @@
-from app.services.prometheus_service import fetch_cpu_usage
+# Import function
+from app.services.docker_service import restart_container
 
-print(fetch_cpu_usage())
+# Restart container
+message = restart_container("optimizer-engine")
+
+# Print result
+print(message)
