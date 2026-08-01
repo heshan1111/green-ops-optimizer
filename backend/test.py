@@ -1,8 +1,8 @@
-# Import function
-from app.services.docker_service import restart_container
+# Import optimizer function
+from app.services.optimizer_service import optimize
 
-# Restart container
-message = restart_container("optimizer-engine")
+# Run optimizer
+result = optimize()
 
 # Print result
-print(message)
+print(result)

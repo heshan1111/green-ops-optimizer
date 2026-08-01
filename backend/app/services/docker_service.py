@@ -1,6 +1,15 @@
 # Docker SDK
 import docker
 
+# Import container not found error
+from docker.errors import NotFound
+
+# Import Docker API error
+from docker.errors import APIError
+
+# Import logger
+from app.core.logger import logger
+
 # Create Docker client
 client = docker.from_env()
 
@@ -33,7 +42,18 @@ def restart_container(container_name):
         # Return success message
         return f"{container_name} restarted successfully."
 
-    except Exception as error:
+    except NotFound:
+
+        # Log container not found
+        logger.error(f"Container '{container_name}' not found.")
 
         # Return error message
-        return f"Error: {error}"
+        return f"Container '{container_name}' not found."
+
+    except APIError as error:
+
+        # Log Docker API error
+        logger.error(f"Docker API Error: {error}")
+
+        # Return error message
+        return f"Docker API Error: {error}"
