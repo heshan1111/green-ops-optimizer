@@ -4,12 +4,16 @@ import time
 from fastapi import FastAPI, Query
 from prometheus_fastapi_instrumentator import Instrumentator
 
+# Import scheduler
+from app.scheduler.scheduler import run_scheduler
+
 # Import logger
 from app.core.logger import logger
 
 # Import routers
 from app.routes.home import router as home_router
 from app.routes.status import router as status_router
+from app.routes.optimizer import router as optimizer_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -17,12 +21,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Log application startup
-logger.info("GreenOps Backend Started Successfully")
+# Run scheduler when application starts
+@app.on_event("startup")
+def startup_event():
+
+    # Log application startup
+    logger.info("GreenOps Backend Started Successfully")
+
+    # Start background scheduler
+    run_scheduler()
 
 # Register routers
 app.include_router(home_router)
 app.include_router(status_router)
+app.include_router(optimizer_router)
 
 
 @app.get("/heavy-task")
